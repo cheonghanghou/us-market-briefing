@@ -1,0 +1,40 @@
+name: Daily US Market Briefing
+
+on:
+  schedule:
+    - cron: "*/15 12-14 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "跳过纽约时间9点的触发窗口检查，强制运行（用于手动测试）"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  briefing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run daily briefing
+        env:
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          FORCE_RUN: ${{ github.event.inputs.force == 'true' && 'true' || 'false' }}
+        run: python scripts/daily_briefing.py
+
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add reports/daily
+          git diff --cached --quiet || git commit -m "Add daily briefing report"
+          git push
