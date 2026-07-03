@@ -40,7 +40,7 @@ def find_major_news(news_items):
     for item in news_items:
         text = item.get("headline", "") + " " + item.get("summary", "")
         if any_keyword(text, MAJOR_NEWS_KEYWORDS):
-            hits.append(item.get("headline", "").strip())
+            hits.append({"headline": item.get("headline", "").strip(), "url": item.get("url", "").strip()})
     return hits
 
 
@@ -73,7 +73,7 @@ def main():
 
     news = get_general_news(finnhub_token, limit=80)
     major_news = find_major_news(news)
-    new_news = [n for n in major_news if n not in state["news_alerts"]]
+    new_news = [n for n in major_news if n["headline"] not in state["news_alerts"]]
 
     trigger_magnitude = tier > state["magnitude_tier"]
     trigger_news = len(new_news) > 0
@@ -101,7 +101,9 @@ def main():
     if new_news:
         lines.append("相关重大新闻：")
         for n in new_news[:5]:
-            lines.append(f"- {n}")
+            lines.append(f"- {n['headline']}")
+            if n["url"]:
+                lines.append(f"  链接：{n['url']}")
     lines.append("")
     lines.append("以上内容仅供参考，不构成投资建议。")
     body = "\n".join(lines)
@@ -116,7 +118,7 @@ def main():
     send_email(subject, body, gmail_addr, gmail_pass)
 
     state["magnitude_tier"] = max(state["magnitude_tier"], tier)
-    state["news_alerts"] = state["news_alerts"] + new_news
+    state["news_alerts"] = state["news_alerts"] + [n["headline"] for n in new_news]
     os.makedirs(os.path.dirname(state_path), exist_ok=True)
     with open(state_path, "w", encoding="utf-8") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)

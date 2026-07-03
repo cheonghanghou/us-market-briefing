@@ -50,7 +50,11 @@ def fmt_pct(pct):
 def fmt_item(item, idx):
     headline = item.get("headline", "").strip()
     source = item.get("source", "")
-    return f"{idx}. {headline}（来源：{source}）"
+    url = item.get("url", "").strip()
+    line = f"{idx}. {headline}（来源：{source}）"
+    if url:
+        line += f"\n   链接：{url}"
+    return line
 
 
 def main():
