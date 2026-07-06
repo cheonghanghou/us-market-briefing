@@ -2,7 +2,7 @@ name: US Market Volatility Alert
 
 on:
   schedule:
-    - cron: "*/30 13-21 * * 1-5"
+    - cron: "3,33 12-21 * * 1-5"
   workflow_dispatch:
     inputs:
       force:

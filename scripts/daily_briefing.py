@@ -65,8 +65,8 @@ def main():
     report_path = os.path.join(base_dir, "reports", "daily", f"{date_str}.md")
 
     force = os.environ.get("FORCE_RUN") == "true"
-    if not force and now.hour != 9:
-        print(f"当前纽约时间 {now.strftime('%Y-%m-%d %H:%M')}，不在9点触发窗口内，退出。")
+    if not force and not (6 <= now.hour <= 13):
+        print(f"当前纽约时间 {now.strftime('%Y-%m-%d %H:%M')}，不在触发窗口（6:00-13:59）内，退出。")
         return
     if os.path.exists(report_path):
         print(f"{date_str} 的简报已存在，跳过重复发送。")

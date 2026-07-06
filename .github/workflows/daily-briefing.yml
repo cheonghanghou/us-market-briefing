@@ -2,7 +2,7 @@ name: Daily US Market Briefing
 
 on:
   schedule:
-    - cron: "*/15 12-14 * * 1-5"
+    - cron: "7,22,37,52 11-17 * * 1-5"
   workflow_dispatch:
     inputs:
       force:
