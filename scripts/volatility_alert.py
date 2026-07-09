@@ -104,8 +104,6 @@ def main():
             lines.append(f"- {n['headline']}")
             if n["url"]:
                 lines.append(f"  链接：{n['url']}")
-    lines.append("")
-    lines.append("以上内容仅供参考，不构成投资建议。")
     body = "\n".join(lines)
 
     time_str = now.strftime("%H%M")
