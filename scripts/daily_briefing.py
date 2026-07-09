@@ -156,7 +156,6 @@ def main():
         matched_kw.update(matching_keywords(text, SECTOR_KEYWORDS))
     watch_sectors = "、".join(sorted(matched_kw)) if matched_kw else "暂无明显行业信号"
     lines.append(f"- 重点观察板块：{watch_sectors}")
-    lines.append("- 以上内容为脚本自动抓取整理，不构成投资建议。")
 
     body = "\n".join(lines)
 
